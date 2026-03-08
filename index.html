@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>For My Kassi ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        canvas#space {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #letter {
+            margin-top: 120px;
+            font-size: 26px;
+            width: 70%;
+            margin: 120px auto 20px auto;
+            min-height: 1.5em;
+        }
+
+        button {
+            padding: 20px 45px;
+            font-size: 28px;
+            margin: 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, opacity 0.2s;
+            z-index: 1000;
+            position: relative;
+        }
+
+        #yes { background: #ff2e6e; color: white; box-shadow: 0 0 20px rgba(255, 46, 110, 0.5); }
+        #no { background: #444; color: white; position: absolute; white-space: nowrap; }
+
+        /* ГАЛЕРЕЯ */
+        #gallery {
+            display: none;
+            margin-top: 50px;
+            position: relative;
+            min-height: 550px;
+        }
+
+        #gallery img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #ff2e6e;
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.8s ease, transform 0.8s ease, left 1s ease, top 1s ease;
+            box-shadow: 0 0 15px rgba(255, 46, 110, 0.4);
+            cursor: zoom-in;
+        }
+
+        #gallery img.show { opacity: 1; transform: scale(1); }
+
+        #game { display: none; margin-top: 30px; }
+
+        .heart {
+            position: absolute;
+            font-size: 32px;
+            cursor: pointer;
+            z-index: 50;
+        }
+
+        /* УВЕЛИЧЕНИЕ ФОТО */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        #overlay img { max-width: 90%; max-height: 90%; border-radius: 10px; border: 2px solid #ff2e6e; }
+
+        /* ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ */
+        #final-message {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid #ff2e6e;
+            z-index: 10000;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 0 50px #ff2e6e;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="space"></canvas>
+
+<h1>For You, Kassi ❤️</h1>
+
+<div id="letter"></div>
+
+<div id="buttons">
+    <button id="yes" onclick="yes()">Yes ❤️</button>
+    <button id="no">No</button>
+</div>
+
+<div id="gallery">
+    <h2>Our Memories 📸</h2>
+    <img src="1.jpeg"> <img src="2.jpeg"> <img src="3.jpeg"> <img src="4.jpeg">
+    <img src="5.jpeg"> <img src="6.jpeg"> <img src="7.jpeg"> <img src="8.jpeg">
+    <img src="9.jpeg"> <img src="10.jpeg"> <img src="11.jpeg"> <img src="12.jpeg">
+</div>
+
+<div id="game">
+    <h2>Poimay serdechki 🎮</h2>
+    <p>Score: <span id="score">0</span> / 10</p>
+</div>
+
+<div id="overlay" onclick="this.style.display='none'">
+    <img id="bigImage" src="">
+</div>
+
+<div id="final-message">
+    <h2 style="color: #ff2e6e;">С 8 Марта, Каси! 💐</h2>
+    <p id="wish-text"></p>
+    <button onclick="document.getElementById('final-message').style.display='none'">❤️</button>
+</div>
+
+<script>
+    /* ТЕКСТ ПРИ ЗАГРУЗКЕ */
+    let text = "Ya sdelal etu malenkuyu vselennuiu dlya tebiya. Potomu chto kogda ty riadom , moi mir stanovitsyia iarche!❤️";
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            document.getElementById("letter").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, 40);
+        }
+    }
+    type();
+
+    /* КНОПКА "НЕТ" */
+    let no = document.getElementById("no");
+    let noScale = 1; 
+    no.addEventListener("mouseover", () => {
+        const padding = 100;
+        let x = Math.random() * (window.innerWidth - padding * 2) + padding;
+        let y = Math.random() * (window.innerHeight - padding * 2) + padding;
+        no.style.left = x + "px";
+        no.style.top = y + "px";
+        noScale -= 0.12;
+        if (noScale < 0.15) noScale = 0.15;
+        no.style.transform = `scale(${noScale})`;
+    });
+
+    /* КНОПКА "ДА" */
+    function yes() {
+        alert("Umnichka ❤️. Другого ответа и не ждал))");
+        drawHeart();
+        document.getElementById("buttons").style.display = "none";
+        document.getElementById("gallery").style.display = "block";
+        document.getElementById("game").style.display = "block";
+        arrangeAndShowPhotos();
+        startGame();
+        setupGalleryClicks();
+    }
+
+    /* ФОТО В СЕРДЦЕ */
+    function arrangeAndShowPhotos() {
+        const images = document.querySelectorAll("#gallery img");
+        const coords = [
+            {x: 0, y: 160}, {x: -80, y: 100}, {x: -150, y: 20}, {x: -160, y: -70},
+            {x: -100, y: -140}, {x: -30, y: -100}, {x: 30, y: -100}, {x: 100, y: -140},
+            {x: 160, y: -70}, {x: 150, y: 20}, {x: 80, y: 100}, {x: 0, y: -20}
+        ];
+        images.forEach((img, index) => {
+            if (coords[index]) {
+                img.style.left = `calc(50% + ${coords[index].x}px - 65px)`;
+                img.style.top = `calc(250px + ${coords[index].y}px)`;
+                setTimeout(() => img.classList.add("show"), index * 350); 
+            }
+        });
+    }
+
+    /* УВЕЛИЧЕНИЕ ФОТО */
+    function setupGalleryClicks() {
+        document.querySelectorAll("#gallery img").forEach(img => {
+            img.onclick = function() {
+                document.getElementById("bigImage").src = this.src;
+                document.getElementById("overlay").style.display = "flex";
+            }
+        });
+    }
+
+    /* ПЕРСОНАЛЬНЫЙ ФИНАЛ */
+    function showFinalMessage() {
+        const finalBox = document.getElementById("final-message");
+        const wishText = document.getElementById("wish-text");
+        finalBox.style.display = "block";
+        
+        let message = "Умничка! Ты поймала все сердечки, но самое главное — моё — уже давно у тебя. Пусть этот день будет таким же красивым, как твоя улыбка. Спасибо, что ты есть в моей вселенной! Я люблю тебя моя принцесса, с 8 марта!";
+        let j = 0;
+        wishText.innerHTML = "";
+        function typeFinal() {
+            if (j < message.length) {
+                wishText.innerHTML += message.charAt(j);
+                j++;
+                setTimeout(typeFinal, 50);
+            }
+        }
+        typeFinal();
+    }
+
+    /* СЕРДЦЕ НА ФОНЕ */
+    function drawHeart() {
+        let heartCanvas = document.createElement("canvas");
+        heartCanvas.width = 400; heartCanvas.height = 400;
+        heartCanvas.style.position = "fixed";
+        heartCanvas.style.left = "50%"; heartCanvas.style.top = "50%";
+        heartCanvas.style.transform = "translate(-50%, -50%)";
+        heartCanvas.style.zIndex = "-1"; heartCanvas.style.opacity = "0.5";
+        heartCanvas.style.pointerEvents = "none";
+        document.body.appendChild(heartCanvas);
+        let ctx = heartCanvas.getContext("2d");
+        let t = 0;
+        function animate() {
+            ctx.clearRect(0, 0, 400, 400); ctx.fillStyle = "#ff2e6e"; ctx.beginPath();
+            for (let i = 0; i < Math.PI * 2; i += 0.02) {
+                let x = 16 * Math.pow(Math.sin(i), 3);
+                let y = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
+                let scale = 11 + Math.sin(t) * 1.5;
+                ctx.lineTo(200 + x * scale, 200 - y * scale);
+            }
+            ctx.fill(); t += 0.05; requestAnimationFrame(animate);
+        }
+        animate();
+    }
+
+    /* ЗВЁЗДЫ */
+    let canvas = document.getElementById("space");
+    let spaceCtx = canvas.getContext("2d");
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+    let stars = [];
+    for (let j = 0; j < 200; j++) stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 2 });
+    function drawSpace() {
+        spaceCtx.clearRect(0, 0, canvas.width, canvas.height); spaceCtx.fillStyle = "white";
+        stars.forEach(s => { spaceCtx.beginPath(); spaceCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2); spaceCtx.fill(); });
+        requestAnimationFrame(drawSpace);
+    }
+    drawSpace();
+
+    /* ИГРА */
+    let score = 0;
+    let gameFinished = false;
+    function startGame() {
+        let gameInterval = setInterval(() => {
+            if (gameFinished) { clearInterval(gameInterval); return; }
+            let heart = document.createElement("div");
+            heart.innerHTML = "❤️"; heart.className = "heart";
+            heart.style.left = Math.random() * (window.innerWidth - 50) + "px";
+            heart.style.top = Math.random() * (window.innerHeight - 50) + "px";
+            heart.onclick = function() {
+                score++; document.getElementById("score").innerText = score;
+                heart.remove();
+                if (score === 10) {
+                    gameFinished = true;
+                    showFinalMessage();
+                }
+            }
+            document.body.appendChild(heart);
+            setTimeout(() => { if(heart) heart.remove(); }, 2000);
+        }, 800);
+    }
+</script>
+</body>
+</html>
