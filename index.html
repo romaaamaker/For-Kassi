@@ -15,68 +15,52 @@
             touch-action: manipulation;
         }
 
-        canvas#space {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
+        canvas#space { position: fixed; top: 0; left: 0; z-index: -1; }
 
         #letter {
-            margin-top: 60px;
-            font-size: clamp(18px, 5vw, 26px);
-            width: 85%;
-            margin: 60px auto 20px auto;
-            min-height: 1.5em;
-            line-height: 1.4;
+            margin-top: 50px;
+            font-size: clamp(20px, 6vw, 28px); /* Увеличил шрифт */
+            width: 90%;
+            margin: 60px auto 30px auto;
+            line-height: 1.5;
         }
 
         #buttons {
             position: relative;
-            min-height: 100px;
+            min-height: 120px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         button {
-            padding: 15px 35px;
-            font-size: clamp(20px, 6vw, 28px);
-            margin: 10px;
+            padding: 20px 40px; /* Кнопки стали больше */
+            font-size: clamp(22px, 7vw, 30px); 
+            margin: 15px;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, opacity 0.2s;
+            transition: 0.2s;
             z-index: 1000;
         }
 
-        #yes { 
-            background: #ff2e6e; 
-            color: white; 
-            box-shadow: 0 0 20px rgba(255, 46, 110, 0.5); 
-        }
+        #yes { background: #ff2e6e; color: white; box-shadow: 0 0 25px rgba(255, 46, 110, 0.6); }
+        #no { background: #444; color: white; position: absolute; white-space: nowrap; }
 
-        #no { 
-            background: #444; 
-            color: white; 
-            position: absolute; 
-            white-space: nowrap;
-            transition: left 0.3s ease, top 0.3s ease, transform 0.2s;
-        }
-
-        /* ГАЛЕРЕЯ */
         #gallery {
             display: none;
-            margin-top: 30px;
+            margin-top: 40px;
             position: relative;
-            min-height: 500px;
+            min-height: 550px;
             width: 100%;
         }
 
+        #gallery h2 { font-size: 28px; margin-bottom: 70px; }
+
         #gallery img {
-            width: clamp(80px, 20vw, 130px);
-            height: clamp(80px, 20vw, 130px);
+            width: clamp(95px, 24vw, 140px); /* Фото стали крупнее */
+            height: clamp(95px, 24vw, 140px);
             object-fit: cover;
             border-radius: 50%;
             border: 3px solid #ff2e6e;
@@ -85,66 +69,46 @@
             transform: scale(0.5);
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 0 15px rgba(255, 46, 110, 0.4);
-            cursor: zoom-in;
         }
 
-        #gallery img.show {
-            opacity: 1;
-            transform: scale(1);
-        }
+        #gallery img.show { opacity: 1; transform: scale(1); }
 
-        #game { 
-            display: none; 
-            margin-top: 20px;
-            padding-bottom: 40px;
-        }
+        #game { display: none; margin-top: 40px; }
+        #game h2 { font-size: 26px; }
+        #score-container { font-size: 24px; color: #ff2e6e; font-weight: bold; }
 
         .heart {
             position: absolute;
-            font-size: 35px;
+            font-size: 45px; /* Игровые сердца стали БОЛЬШЕ */
             cursor: pointer;
-            z-index: 50;
+            z-index: 100;
             user-select: none;
+            filter: drop-shadow(0 0 10px #ff2e6e);
         }
 
-        /* УВЕЛИЧЕНИЕ ФОТО */
         #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
+            z-index: 9999; justify-content: center; align-items: center;
         }
+        #overlay img { max-width: 95%; max-height: 85%; border-radius: 15px; border: 2px solid #ff2e6e; }
 
-        #overlay img { 
-            max-width: 95%; 
-            max-height: 85%; 
-            border-radius: 10px; 
-            border: 2px solid #ff2e6e; 
-        }
-
-        /* ФИНАЛЬНОЕ ПОЗДРАВЛЕНИЕ */
         #final-message {
             display: none;
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(20, 20, 20, 0.98);
-            padding: clamp(20px, 5vw, 40px);
-            border-radius: 20px;
+            background: rgba(25, 25, 25, 0.98);
+            padding: 30px;
+            border-radius: 25px;
             border: 2px solid #ff2e6e;
             z-index: 10000;
             width: 85%;
-            max-width: 450px;
-            box-shadow: 0 0 50px #ff2e6e;
+            box-shadow: 0 0 60px rgba(255, 46, 110, 0.5);
         }
 
-        h2 { font-size: clamp(22px, 6vw, 32px); margin-bottom: 15px; }
-        #wish-text { font-size: clamp(16px, 4.5vw, 20px); line-height: 1.5; }
+        #wish-text { font-size: 20px; line-height: 1.6; color: #fff; }
     </style>
 </head>
 <body>
@@ -161,15 +125,15 @@
 </div>
 
 <div id="gallery">
-    <h2 style="margin-bottom: 60px;">Our Memories 📸</h2>
+    <h2>Our Memories 📸</h2>
     <img src="1.jpeg"> <img src="2.jpeg"> <img src="3.jpeg"> <img src="4.jpeg">
     <img src="5.jpeg"> <img src="6.jpeg"> <img src="7.jpeg"> <img src="8.jpeg">
     <img src="9.jpeg"> <img src="10.jpeg"> <img src="11.jpeg"> <img src="12.jpeg">
 </div>
 
 <div id="game">
-    <h2>Poimay serdechki 🎮</h2>
-    <p style="font-size: 20px;">Score: <span id="score">0</span> / 10</p>
+    <h2>Поймай мои сердечки! 🎮</h2>
+    <p id="score-container">Score: <span id="score">0</span> / 10</p>
 </div>
 
 <div id="overlay" onclick="this.style.display='none'">
@@ -177,13 +141,12 @@
 </div>
 
 <div id="final-message">
-    <h2 style="color: #ff2e6e;">С 8 Марта, Касси! 💐</h2>
+    <h2 style="color: #ff2e6e; margin-top: 0;">С 8 Марта, Касси! 💐</h2>
     <p id="wish-text"></p>
-    <button style="margin-top: 20px;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
+    <button style="background: #ff2e6e; color: white; margin-top: 15px;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
 </div>
 
 <script>
-    /* ТЕКСТ ПРИ ЗАГРУЗКЕ */
     const textStr = "Ya sdelal etu malenkuyu vselennuiu dlya tebiya. Potomu chto kogda ty riadom , moi mir stanovitsyia iarche!❤️";
     let charIdx = 0;
     function type() {
@@ -195,27 +158,17 @@
     }
     type();
 
-    /* КНОПКА "НЕТ" */
     let noBtn = document.getElementById("no");
-    noBtn.addEventListener("touchstart", moveNo); // Для телефонов
-    noBtn.addEventListener("mouseover", moveNo);   // Для ПК
-
     function moveNo() {
-        const padding = 80;
-        let x = Math.random() * (window.innerWidth - padding * 2) + padding;
-        let y = Math.random() * (window.innerHeight - padding * 2) + padding;
-        
-        // Ограничиваем, чтобы не улетала совсем за края
-        x = Math.max(10, Math.min(x, window.innerWidth - 100));
-        y = Math.max(10, Math.min(y, window.innerHeight - 50));
-
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
+        let x = Math.random() * (window.innerWidth - 120);
+        let y = Math.random() * (window.innerHeight - 120);
+        noBtn.style.left = Math.max(10, x) + "px";
+        noBtn.style.top = Math.max(10, y) + "px";
     }
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
+    noBtn.addEventListener("mouseover", moveNo);
 
-    /* КНОПКА "ДА" */
     function yes() {
-        alert("Umnichka ❤️. Другого ответа и не ждал))");
         drawHeartBg();
         document.getElementById("buttons").style.display = "none";
         document.getElementById("gallery").style.display = "block";
@@ -225,11 +178,10 @@
         setupClicks();
     }
 
-    /* ФОТО В СЕРДЦЕ (Адаптивное) */
     function arrangePhotos() {
         const images = document.querySelectorAll("#gallery img");
-        const isMobile = window.innerWidth < 768;
-        const scale = isMobile ? 0.65 : 1; // Уменьшаем масштаб сердца для телефонов
+        const isSmall = window.innerWidth < 600;
+        const scale = isSmall ? 0.75 : 1.1; 
 
         const coords = [
             {x: 0, y: 160}, {x: -80, y: 100}, {x: -150, y: 20}, {x: -160, y: -70},
@@ -238,12 +190,10 @@
         ];
 
         images.forEach((img, index) => {
-            if (coords[index]) {
-                const imgHalf = img.offsetWidth / 2 || (isMobile ? 40 : 65);
-                img.style.left = `calc(50% + ${(coords[index].x * scale)}px - ${imgHalf}px)`;
-                img.style.top = `calc(${isMobile ? 180 : 250}px + ${(coords[index].y * scale)}px)`;
-                setTimeout(() => img.classList.add("show"), index * 250); 
-            }
+            const imgOffset = img.offsetWidth / 2 || 50;
+            img.style.left = `calc(50% + ${(coords[index].x * scale)}px - ${imgOffset}px)`;
+            img.style.top = `calc(${isSmall ? 180 : 250}px + ${(coords[index].y * scale)}px)`;
+            setTimeout(() => img.classList.add("show"), index * 200); 
         });
     }
 
@@ -256,35 +206,24 @@
         });
     }
 
-    /* ПОЗДРАВЛЕНИЕ */
     function showFinal() {
-        const finalBox = document.getElementById("final-message");
-        const wishText = document.getElementById("wish-text");
-        finalBox.style.display = "block";
-        
+        document.getElementById("final-message").style.display = "block";
         let msg = "Умничка! Ты поймала все сердечки, но самое главное — моё — уже давно у тебя. Пусть этот день будет таким же красивым, как твоя улыбка. Спасибо, что ты есть в моей вселенной! Я люблю тебя моя принцесса, с 8 марта!";
         let j = 0;
-        wishText.innerHTML = "";
+        let wish = document.getElementById("wish-text");
+        wish.innerHTML = "";
         function typeFinal() {
-            if (j < msg.length) {
-                wishText.innerHTML += msg.charAt(j);
-                j++;
-                setTimeout(typeFinal, 50);
-            }
+            if (j < msg.length) { wish.innerHTML += msg.charAt(j); j++; setTimeout(typeFinal, 40); }
         }
         typeFinal();
     }
 
-    /* ФОНОВОЕ СЕРДЦЕ */
     function drawHeartBg() {
         let hCanvas = document.createElement("canvas");
         hCanvas.width = 400; hCanvas.height = 400;
-        hCanvas.style.position = "fixed";
-        hCanvas.style.left = "50%"; hCanvas.style.top = "50%";
-        hCanvas.style.transform = "translate(-50%, -50%)";
-        hCanvas.style.zIndex = "-1"; hCanvas.style.opacity = "0.4";
-        hCanvas.style.pointerEvents = "none";
-        document.body.appendChild(hCanvas);
+        hCanvas.style.position = "fixed"; hCanvas.style.left = "50%"; hCanvas.style.top = "50%";
+        hCanvas.style.transform = "translate(-50%, -50%)"; hCanvas.style.zIndex = "-1";
+        hCanvas.style.opacity = "0.4"; document.body.appendChild(hCanvas);
         let ctx = hCanvas.getContext("2d");
         let t = 0;
         function anim() {
@@ -292,22 +231,19 @@
             for (let i = 0; i < Math.PI * 2; i += 0.02) {
                 let x = 16 * Math.pow(Math.sin(i), 3);
                 let y = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
-                let s = 10 + Math.sin(t) * 1.5;
-                ctx.lineTo(200 + x * s, 200 - y * s);
+                let s = 11 + Math.sin(t) * 1.5; ctx.lineTo(200 + x * s, 200 - y * s);
             }
             ctx.fill(); t += 0.05; requestAnimationFrame(anim);
         }
         anim();
     }
 
-    /* КОСМОС */
     let space = document.getElementById("space");
     let sCtx = space.getContext("2d");
     function res() { space.width = window.innerWidth; space.height = window.innerHeight; }
-    window.onresize = () => { res(); arrangePhotos(); };
-    res();
+    window.onresize = res; res();
     let stars = [];
-    for (let j = 0; j < 150; j++) stars.push({ x: Math.random() * space.width, y: Math.random() * space.height, r: Math.random() * 1.5 });
+    for (let j = 0; j < 120; j++) stars.push({ x: Math.random() * space.width, y: Math.random() * space.height, r: Math.random() * 2 });
     function drawStars() {
         sCtx.clearRect(0, 0, space.width, space.height); sCtx.fillStyle = "white";
         stars.forEach(s => { sCtx.beginPath(); sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2); sCtx.fill(); });
@@ -315,7 +251,6 @@
     }
     drawStars();
 
-    /* ИГРА */
     let score = 0;
     let over = false;
     function startGame() {
@@ -331,8 +266,8 @@
                 if (score === 10) { over = true; showFinal(); }
             }
             document.body.appendChild(h);
-            setTimeout(() => { if(h) h.remove(); }, 2500);
-        }, 900);
+            setTimeout(() => { if(h) h.remove(); }, 2000);
+        }, 800);
     }
 </script>
 </body>
