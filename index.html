@@ -19,34 +19,41 @@
 
         #letter {
             margin-top: 50px;
-            font-size: clamp(20px, 6vw, 28px); /* Увеличил шрифт */
+            font-size: clamp(20px, 6vw, 28px);
             width: 90%;
             margin: 60px auto 30px auto;
             line-height: 1.5;
+            min-height: 4em;
         }
 
         #buttons {
             position: relative;
-            min-height: 120px;
+            min-height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 20px; /* Расстояние между кнопками в начале */
         }
 
         button {
-            padding: 20px 40px; /* Кнопки стали больше */
-            font-size: clamp(22px, 7vw, 30px); 
-            margin: 15px;
+            padding: 20px 40px;
+            font-size: clamp(22px, 7vw, 30px);
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.2s;
+            transition: transform 0.2s, opacity 0.3s, left 0.3s, top 0.3s;
             z-index: 1000;
         }
 
         #yes { background: #ff2e6e; color: white; box-shadow: 0 0 25px rgba(255, 46, 110, 0.6); }
-        #no { background: #444; color: white; position: absolute; white-space: nowrap; }
+        
+        #no { 
+            background: #444; 
+            color: white; 
+            position: relative; /* В начале стоит в потоке */
+            white-space: nowrap; 
+        }
 
         #gallery {
             display: none;
@@ -56,10 +63,8 @@
             width: 100%;
         }
 
-        #gallery h2 { font-size: 28px; margin-bottom: 70px; }
-
         #gallery img {
-            width: clamp(95px, 24vw, 140px); /* Фото стали крупнее */
+            width: clamp(95px, 24vw, 140px);
             height: clamp(95px, 24vw, 140px);
             object-fit: cover;
             border-radius: 50%;
@@ -68,21 +73,16 @@
             opacity: 0;
             transform: scale(0.5);
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 15px rgba(255, 46, 110, 0.4);
         }
 
         #gallery img.show { opacity: 1; transform: scale(1); }
 
         #game { display: none; margin-top: 40px; }
-        #game h2 { font-size: 26px; }
-        #score-container { font-size: 24px; color: #ff2e6e; font-weight: bold; }
-
         .heart {
             position: absolute;
-            font-size: 45px; /* Игровые сердца стали БОЛЬШЕ */
+            font-size: 45px;
             cursor: pointer;
             z-index: 100;
-            user-select: none;
             filter: drop-shadow(0 0 10px #ff2e6e);
         }
 
@@ -107,16 +107,12 @@
             width: 85%;
             box-shadow: 0 0 60px rgba(255, 46, 110, 0.5);
         }
-
-        #wish-text { font-size: 20px; line-height: 1.6; color: #fff; }
     </style>
 </head>
 <body>
 
 <canvas id="space"></canvas>
-
 <h1>For You, Kassi ❤️</h1>
-
 <div id="letter"></div>
 
 <div id="buttons">
@@ -133,7 +129,7 @@
 
 <div id="game">
     <h2>Поймай мои сердечки! 🎮</h2>
-    <p id="score-container">Score: <span id="score">0</span> / 10</p>
+    <p style="font-size: 24px; color: #ff2e6e;">Score: <span id="score">0</span> / 10</p>
 </div>
 
 <div id="overlay" onclick="this.style.display='none'">
@@ -141,9 +137,9 @@
 </div>
 
 <div id="final-message">
-    <h2 style="color: #ff2e6e; margin-top: 0;">С 8 Марта, Касси! 💐</h2>
-    <p id="wish-text"></p>
-    <button style="background: #ff2e6e; color: white; margin-top: 15px;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
+    <h2 style="color: #ff2e6e;">С 8 Марта, Касси! 💐</h2>
+    <p id="wish-text" style="font-size: 20px; line-height: 1.6;"></p>
+    <button style="background: #ff2e6e; color: white;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
 </div>
 
 <script>
@@ -158,14 +154,34 @@
     }
     type();
 
+    /* ЛОГИКА КНОПКИ NO */
     let noBtn = document.getElementById("no");
-    function moveNo() {
+    let noScale = 1.0;
+    let noOpacity = 1.0;
+
+    function moveNo(e) {
+        if (e) e.preventDefault();
+        
+        // Делаем кнопку абсолютной при первом же взаимодействии
+        noBtn.style.position = "absolute";
+        
+        // Уменьшаем размер и прозрачность
+        noScale -= 0.15;
+        noOpacity -= 0.15;
+        
+        if (noScale < 0.2) noScale = 0.2; // Чтобы совсем не исчезла в ноль
+        if (noOpacity < 0.2) noOpacity = 0.2;
+
         let x = Math.random() * (window.innerWidth - 120);
         let y = Math.random() * (window.innerHeight - 120);
+
         noBtn.style.left = Math.max(10, x) + "px";
         noBtn.style.top = Math.max(10, y) + "px";
+        noBtn.style.transform = `scale(${noScale})`;
+        noBtn.style.opacity = noOpacity;
     }
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); });
+
+    noBtn.addEventListener("touchstart", moveNo);
     noBtn.addEventListener("mouseover", moveNo);
 
     function yes() {
@@ -182,13 +198,11 @@
         const images = document.querySelectorAll("#gallery img");
         const isSmall = window.innerWidth < 600;
         const scale = isSmall ? 0.75 : 1.1; 
-
         const coords = [
             {x: 0, y: 160}, {x: -80, y: 100}, {x: -150, y: 20}, {x: -160, y: -70},
             {x: -100, y: -140}, {x: -30, y: -100}, {x: 30, y: -100}, {x: 100, y: -140},
             {x: 160, y: -70}, {x: 150, y: 20}, {x: 80, y: 100}, {x: 0, y: -20}
         ];
-
         images.forEach((img, index) => {
             const imgOffset = img.offsetWidth / 2 || 50;
             img.style.left = `calc(50% + ${(coords[index].x * scale)}px - ${imgOffset}px)`;
@@ -211,7 +225,6 @@
         let msg = "Умничка! Ты поймала все сердечки, но самое главное — моё — уже давно у тебя. Пусть этот день будет таким же красивым, как твоя улыбка. Спасибо, что ты есть в моей вселенной! Я люблю тебя моя принцесса, с 8 марта!";
         let j = 0;
         let wish = document.getElementById("wish-text");
-        wish.innerHTML = "";
         function typeFinal() {
             if (j < msg.length) { wish.innerHTML += msg.charAt(j); j++; setTimeout(typeFinal, 40); }
         }
