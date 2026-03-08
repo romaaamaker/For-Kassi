@@ -26,13 +26,14 @@
             min-height: 4em;
         }
 
+        /* ЖЕЛЕЗОБЕТОННАЯ РАССТАНОВКА КНОПОК */
         #buttons {
-            position: relative;
-            min-height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Расстояние между кнопками в начале */
+            gap: 30px; /* Отступ между кнопками в начале */
+            min-height: 100px;
+            margin-top: 20px;
         }
 
         button {
@@ -42,7 +43,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, opacity 0.3s, left 0.3s, top 0.3s;
+            transition: all 0.3s ease; /* Плавность для всего: цвета, размера, позиции */
             z-index: 1000;
         }
 
@@ -51,61 +52,31 @@
         #no { 
             background: #444; 
             color: white; 
-            position: relative; /* В начале стоит в потоке */
             white-space: nowrap; 
         }
 
-        #gallery {
-            display: none;
-            margin-top: 40px;
-            position: relative;
-            min-height: 550px;
-            width: 100%;
-        }
-
+        #gallery { display: none; margin-top: 40px; position: relative; min-height: 550px; width: 100%; }
         #gallery img {
-            width: clamp(95px, 24vw, 140px);
-            height: clamp(95px, 24vw, 140px);
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #ff2e6e;
-            position: absolute;
-            opacity: 0;
-            transform: scale(0.5);
+            width: clamp(95px, 24vw, 140px); height: clamp(95px, 24vw, 140px);
+            object-fit: cover; border-radius: 50%; border: 3px solid #ff2e6e;
+            position: absolute; opacity: 0; transform: scale(0.5);
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         #gallery img.show { opacity: 1; transform: scale(1); }
 
         #game { display: none; margin-top: 40px; }
-        .heart {
-            position: absolute;
-            font-size: 45px;
-            cursor: pointer;
-            z-index: 100;
-            filter: drop-shadow(0 0 10px #ff2e6e);
-        }
+        .heart { position: absolute; font-size: 45px; cursor: pointer; z-index: 100; filter: drop-shadow(0 0 10px #ff2e6e); }
 
         #overlay {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999; justify-content: center; align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999; justify-content: center; align-items: center;
         }
         #overlay img { max-width: 95%; max-height: 85%; border-radius: 15px; border: 2px solid #ff2e6e; }
 
         #final-message {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(25, 25, 25, 0.98);
-            padding: 30px;
-            border-radius: 25px;
-            border: 2px solid #ff2e6e;
-            z-index: 10000;
-            width: 85%;
-            box-shadow: 0 0 60px rgba(255, 46, 110, 0.5);
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(25, 25, 25, 0.98); padding: 30px; border-radius: 25px;
+            border: 2px solid #ff2e6e; z-index: 10000; width: 85%; box-shadow: 0 0 60px rgba(255, 46, 110, 0.5);
         }
     </style>
 </head>
@@ -139,7 +110,7 @@
 <div id="final-message">
     <h2 style="color: #ff2e6e;">С 8 Марта, Касси! 💐</h2>
     <p id="wish-text" style="font-size: 20px; line-height: 1.6;"></p>
-    <button style="background: #ff2e6e; color: white;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
+    <button style="background: #ff2e6e; color: white; margin-top: 15px;" onclick="document.getElementById('final-message').style.display='none'">❤️</button>
 </div>
 
 <script>
@@ -154,7 +125,7 @@
     }
     type();
 
-    /* ЛОГИКА КНОПКИ NO */
+    /* НОВАЯ ЛОГИКА КНОПКИ NO */
     let noBtn = document.getElementById("no");
     let noScale = 1.0;
     let noOpacity = 1.0;
@@ -162,21 +133,28 @@
     function moveNo(e) {
         if (e) e.preventDefault();
         
-        // Делаем кнопку абсолютной при первом же взаимодействии
-        noBtn.style.position = "absolute";
+        // Жестко привязываем к экрану при первом побеге
+        noBtn.style.position = "fixed";
         
-        // Уменьшаем размер и прозрачность
+        // Уменьшаем масштаб и видимость
         noScale -= 0.15;
         noOpacity -= 0.15;
         
-        if (noScale < 0.2) noScale = 0.2; // Чтобы совсем не исчезла в ноль
+        // Не даем исчезнуть полностью
+        if (noScale < 0.2) noScale = 0.2; 
         if (noOpacity < 0.2) noOpacity = 0.2;
 
-        let x = Math.random() * (window.innerWidth - 120);
-        let y = Math.random() * (window.innerHeight - 120);
+        // Вычисляем координаты, чтобы кнопка не улетала за экран
+        let maxX = window.innerWidth - 100;
+        let maxY = window.innerHeight - 80;
+
+        let x = Math.random() * maxX;
+        let y = Math.random() * maxY;
 
         noBtn.style.left = Math.max(10, x) + "px";
         noBtn.style.top = Math.max(10, y) + "px";
+        
+        // Применяем уменьшение и прозрачность
         noBtn.style.transform = `scale(${noScale})`;
         noBtn.style.opacity = noOpacity;
     }
@@ -184,6 +162,7 @@
     noBtn.addEventListener("touchstart", moveNo);
     noBtn.addEventListener("mouseover", moveNo);
 
+    /* ДАЛЬНЕЙШАЯ ЛОГИКА (YES) */
     function yes() {
         drawHeartBg();
         document.getElementById("buttons").style.display = "none";
